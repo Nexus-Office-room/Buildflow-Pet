@@ -1,0 +1,191 @@
+/* Patch, the small interactive Buildflow companion. The 8×11 atlas is shown at
+   half scale; row zero contains the six-frame idle animation. */
+.patch-companion {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.patch-companion__button {
+  position: relative;
+  display: grid;
+  width: 112px;
+  height: 120px;
+  place-items: center;
+  padding: 4px 8px 0;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.patch-companion__button:hover {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 8px 18px rgba(23, 224, 166, 0.14));
+}
+
+.patch-companion__button:focus-visible {
+  outline: 2px solid var(--term-accent, #17e0a6);
+  outline-offset: 2px;
+}
+
+.patch-companion__sprite {
+  display: block;
+  width: 96px;
+  height: 104px;
+  background-image: url("/patch/patch-v2.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: 768px 1144px;
+  animation: patch-idle 1.2s steps(6, end) infinite;
+}
+
+.patch-companion__emoji {
+  display: grid;
+  width: 96px;
+  height: 96px;
+  place-items: center;
+  border: 2px solid color-mix(in srgb, var(--pet-accent) 75%, transparent);
+  border-radius: 32px;
+  background: radial-gradient(circle at 35% 25%, color-mix(in srgb, var(--pet-accent) 28%, transparent), var(--pet-color) 70%);
+  box-shadow: 0 12px 36px color-mix(in srgb, var(--pet-accent) 18%, transparent), inset 0 0 20px #fff1;
+  font-size: 58px;
+  line-height: 1;
+  animation: patch-idle 2.4s ease-in-out infinite;
+}
+
+.patch-companion__choose {
+  display: inline-block;
+  margin-top: 8px;
+  color: #9ca3af;
+  font: 500 11px/1.4 var(--font-geist-mono), monospace;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.patch-companion__choose:hover { color: #fff; }
+
+.patch-companion--open .patch-companion__sprite {
+  background-position-y: -312px;
+  animation: patch-wave 800ms steps(4, end) infinite;
+}
+
+.patch-companion__status {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid #0b0d12;
+  border-radius: 50%;
+  background: #17e0a6;
+  box-shadow: 0 0 10px rgba(23, 224, 166, 0.75);
+}
+
+.patch-companion__bubble {
+  position: relative;
+  width: min(260px, calc(100vw - 36px));
+  padding: 14px 36px 14px 16px;
+  border: 1px solid rgba(23, 224, 166, 0.25);
+  border-radius: 14px;
+  background: rgba(12, 17, 24, 0.96);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4);
+  color: #e7e9ee;
+  pointer-events: auto;
+  backdrop-filter: blur(12px);
+}
+
+.patch-companion__bubble::after {
+  position: absolute;
+  right: 34px;
+  bottom: -6px;
+  width: 10px;
+  height: 10px;
+  border-right: 1px solid rgba(23, 224, 166, 0.25);
+  border-bottom: 1px solid rgba(23, 224, 166, 0.25);
+  background: #0c1118;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.patch-companion__eyebrow {
+  color: #17e0a6;
+  font: 600 9px/1.3 var(--font-geist-mono), monospace;
+  letter-spacing: 0.12em;
+}
+
+.patch-companion__bubble p {
+  margin: 5px 0 0;
+  color: #e7e9ee;
+  font: 500 13px/1.45 var(--font-geist-sans), sans-serif;
+}
+
+.patch-companion__close {
+  position: absolute;
+  top: 7px;
+  right: 9px;
+  border: 0;
+  background: transparent;
+  color: #9ba4b2;
+  cursor: pointer;
+  font: 20px/1 var(--font-geist-sans), sans-serif;
+}
+
+.patch-companion__close:hover,
+.patch-companion__close:focus-visible {
+  color: #fff;
+}
+
+@keyframes patch-idle {
+  from { background-position-x: 0; }
+  to { background-position-x: -576px; }
+}
+
+@keyframes patch-wave {
+  from { background-position-x: 0; }
+  to { background-position-x: -384px; }
+}
+
+@media (max-width: 640px) {
+  .patch-companion {
+    right: max(8px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .patch-companion__button {
+    width: 94px;
+    height: 104px;
+    transform: scale(0.88);
+    transform-origin: bottom right;
+  }
+
+  .patch-companion__emoji { width: 82px; height: 82px; border-radius: 28px; font-size: 50px; }
+
+  .patch-companion__bubble {
+    margin-right: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .patch-companion__sprite {
+    animation: none;
+    background-position: 0 0;
+  }
+
+  .patch-companion--open .patch-companion__sprite {
+    background-position: 0 -312px;
+  }
+
+  .patch-companion__button {
+    transition: none;
+  }
+}
+
