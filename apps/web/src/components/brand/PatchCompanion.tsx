@@ -31,7 +31,9 @@ interface DragState {
 }
 
 export default function PatchCompanion() {
-  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isPetWindow = pathname === "/pet-window";
+  const [open, setOpen] = useState(isPetWindow);
   const [pet, setPet] = useState<NexusPet>(() => getPet(DEFAULT_PET_ID));
   const [greetingIndex, setGreetingIndex] = useState(0);
   const [enabled, setEnabled] = useState(false);
@@ -45,8 +47,6 @@ export default function PatchCompanion() {
   const dragRef = useRef<DragState | null>(null);
   const rootRef = useRef<HTMLElement>(null);
   const petButtonRef = useRef<HTMLButtonElement>(null);
-  const pathname = usePathname();
-  const isPetWindow = pathname === "/pet-window";
 
   const setSavedPosition = useCallback((nextPosition: PetPosition | null) => {
     positionRef.current = nextPosition;
@@ -106,10 +106,6 @@ export default function PatchCompanion() {
   useEffect(() => {
     if (moveMode) petButtonRef.current?.focus();
   }, [moveMode]);
-
-  useEffect(() => {
-    if (isPetWindow && ready) setOpen(true);
-  }, [isPetWindow, ready]);
 
   useEffect(() => {
     if (isPetWindow && ready && (!enabled || !detached)) window.close();
