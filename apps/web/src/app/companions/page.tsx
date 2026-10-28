@@ -79,16 +79,20 @@ export default function CompanionsPage() {
                     style={{ backgroundColor: pet.color, boxShadow: `inset 0 0 0 1px ${pet.accent}33` }}
                     aria-hidden="true"
                   >
-                    {pet.emoji}
+                    {pet.id === "patch" ? <span className="companion-card__patch" /> : pet.emoji}
                   </span>
                   <span className={`rounded-full px-2.5 py-1 font-mono text-[10px] ${active ? "bg-emerald-300/15 text-emerald-200" : "bg-white/5 text-neutral-500"}`}>
-                    {active ? "YOUR SIDEKICK" : pet.species.toUpperCase()}
+                    {active ? "ACTIVE COMPANION" : pet.species.toUpperCase()}
                   </span>
                 </div>
                 <h2 className="mt-5 text-xl font-semibold">{pet.name}</h2>
                 <p className="mt-1 text-xs" style={{ color: pet.accent }}>{pet.species}</p>
                 <p className="mt-3 min-h-10 text-sm leading-5 text-neutral-400">{pet.description}</p>
                 <p className="mt-4 border-t border-white/10 pt-3 text-xs italic text-neutral-300">“{pet.greeting}”</p>
+                <span className={`mt-4 inline-flex items-center gap-2 text-xs font-medium ${active ? "text-emerald-200" : "text-neutral-400 group-hover:text-white"}`}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${active ? "bg-emerald-300" : "bg-neutral-600 group-hover:bg-white/70"}`} aria-hidden="true" />
+                  {active ? "Following you across Buildflow" : "Choose this companion"}
+                </span>
               </button>
             );
           })}

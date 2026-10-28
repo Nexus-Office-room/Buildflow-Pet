@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState, type CSSProperties } from "react";
 import {
   DEFAULT_PET_ID,
@@ -13,6 +14,22 @@ import {
 export default function PatchCompanion() {
   const [open, setOpen] = useState(false);
   const [pet, setPet] = useState<NexusPet>(() => getPet(DEFAULT_PET_ID));
+  const [greetingIndex, setGreetingIndex] = useState(0);
+  const pathname = usePathname();
+
+  const greetings = [
+    pet.greeting,
+    `I’m right here, ${pet.name === "Patch" ? "builder" : "friend"}. What are we making next?`,
+    "Small steps, good ideas, one build at a time.",
+  ];
+
+  const contextLabel = pathname?.startsWith("/projects/")
+    ? "IN YOUR WORKSPACE"
+    : pathname?.startsWith("/companions")
+      ? "MEET THE CREW"
+      : pathname?.startsWith("/projects")
+        ? "READY TO BUILD"
+        : "YOUR BUILDFLOW SIDEKICK";
 
   useEffect(() => {
     const syncPet = () => {
@@ -31,6 +48,15 @@ export default function PatchCompanion() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
   return (
     <aside
       className={`patch-companion${open ? " patch-companion--open" : ""}`}
@@ -42,14 +68,21 @@ export default function PatchCompanion() {
             className="patch-companion__close"
             type="button"
             onClick={() => setOpen(false)}
-            aria-label="Close Patch message"
+            aria-label={`Close ${pet.name} message`}
           >
             ×
           </button>
-          <span className="patch-companion__eyebrow">YOUR BUILDFLOW SIDEKICK</span>
-          <p>{pet.greeting}</p>
+          <span className="patch-companion__eyebrow">{contextLabel}</span>
+          <p aria-live="polite">{greetings[greetingIndex % greetings.length]}</p>
+          <button
+            className="patch-companion__reply"
+            type="button"
+            onClick={() => setGreetingIndex((index) => index + 1)}
+          >
+            Say something else <span aria-hidden="true">↗</span>
+          </button>
           <Link className="patch-companion__choose" href="/companions" onClick={() => setOpen(false)}>
-            Meet the other companions →
+            Choose a companion <span aria-hidden="true">→</span>
           </Link>
         </div>
       )}
@@ -59,6 +92,7 @@ export default function PatchCompanion() {
         onClick={() => setOpen((value) => !value)}
         aria-label={open ? `Close ${pet.name} message` : `Meet ${pet.name}, your Buildflow sidekick`}
         aria-expanded={open}
+        aria-controls={open ? "patch-companion-message" : undefined}
       >
         {pet.id === "patch" ? (
           <span className="patch-companion__sprite" aria-hidden="true" />

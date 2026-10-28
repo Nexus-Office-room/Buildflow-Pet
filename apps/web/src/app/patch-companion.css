@@ -48,6 +48,17 @@
   animation: patch-idle 1.2s steps(6, end) infinite;
 }
 
+.companion-card__patch {
+  display: block;
+  width: 72px;
+  height: 78px;
+  background-image: url("/patch/patch-v2.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: 576px 858px;
+  animation: patch-preview 1.35s steps(6, end) infinite;
+}
+
 .patch-companion__emoji {
   display: grid;
   width: 96px;
@@ -72,6 +83,35 @@
 }
 
 .patch-companion__choose:hover { color: #fff; }
+
+.patch-companion__reply {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #cbd5e1;
+  cursor: pointer;
+  font: 500 11px/1.4 var(--font-geist-sans), sans-serif;
+  text-decoration: underline;
+  text-decoration-color: rgba(203, 213, 225, 0.35);
+  text-underline-offset: 3px;
+}
+
+.patch-companion__reply:hover,
+.patch-companion__reply:focus-visible {
+  color: #fff;
+  text-decoration-color: currentColor;
+}
+
+.patch-companion__reply:focus-visible,
+.patch-companion__choose:focus-visible,
+.patch-companion__close:focus-visible {
+  outline: 2px solid var(--term-accent, #17e0a6);
+  outline-offset: 3px;
+}
 
 .patch-companion--open .patch-companion__sprite {
   background-position-y: -312px;
@@ -154,6 +194,11 @@
   to { background-position-x: -384px; }
 }
 
+@keyframes patch-preview {
+  from { background-position-x: 0; }
+  to { background-position-x: -432px; }
+}
+
 @media (max-width: 640px) {
   .patch-companion {
     right: max(8px, env(safe-area-inset-right));
@@ -180,6 +225,11 @@
     background-position: 0 0;
   }
 
+  .companion-card__patch {
+    animation: none;
+    background-position: 0 0;
+  }
+
   .patch-companion--open .patch-companion__sprite {
     background-position: 0 -312px;
   }
@@ -188,4 +238,3 @@
     transition: none;
   }
 }
-
