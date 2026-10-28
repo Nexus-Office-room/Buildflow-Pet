@@ -5,9 +5,14 @@ import Link from "next/link";
 import BuildflowLogo from "@/components/brand/BuildflowLogo";
 import {
   DEFAULT_PET_ID,
+  getPetDetached,
+  getPetEnabled,
   getStoredPetId,
   NEXUS_PETS,
+  notifyPetChange,
   PET_CHANGE_EVENT,
+  savePetEnabled,
+  savePetDetached,
   saveStoredPetId,
 } from "@/lib/pets";
 
@@ -28,16 +33,38 @@ export default function CompanionsPage() {
     }
   }, []);
   const selected = useSyncExternalStore(subscribe, getSnapshot, () => DEFAULT_PET_ID);
-  const [saved, setSaved] = useState(false);
+  const enabled = useSyncExternalStore(subscribe, getPetEnabled, () => false);
+  const detached = useSyncExternalStore(subscribe, getPetDetached, () => false);
+  const [status, setStatus] = useState("");
 
   function choose(id: string) {
-    setSaved(false);
+    setStatus("");
     try {
       saveStoredPetId(id);
-      window.dispatchEvent(new Event(PET_CHANGE_EVENT));
-      setSaved(true);
+      notifyPetChange();
+      setStatus("Companion saved");
     } catch {
-      setSaved(false);
+      setStatus("Could not save this companion in your browser");
+    }
+  }
+
+  function toggleCompanion() {
+    try {
+      savePetEnabled(!enabled);
+      notifyPetChange();
+      setStatus(!enabled ? "Floating companion turned on" : "Floating companion turned off");
+    } catch {
+      setStatus("Could not save this setting in your browser");
+    }
+  }
+
+  function bringCompanionBack() {
+    try {
+      savePetDetached(false);
+      notifyPetChange();
+      setStatus("Companion returned to the Buildflow window");
+    } catch {
+      setStatus("Could not return the companion to this window");
     }
   }
 
@@ -47,7 +74,7 @@ export default function CompanionsPage() {
         <header className="mb-10 flex items-center gap-4">
           <BuildflowLogo surface="nav" />
           <div className="ml-auto flex items-center gap-4">
-            {saved && <span role="status" className="text-xs text-emerald-300">Companion saved</span>}
+            {status && <span role="status" className="text-xs text-emerald-300">{status}</span>}
             <Link href="/projects" className="font-mono text-xs text-neutral-400 hover:text-white">← Projects</Link>
           </div>
         </header>
@@ -59,6 +86,42 @@ export default function CompanionsPage() {
             Choose who keeps you company. Your companion follows you across Buildflow on this browser.
           </p>
         </div>
+
+        <section className="mb-9 flex flex-col gap-4 border-y border-white/10 py-5 sm:flex-row sm:items-center sm:justify-between" aria-label="Floating companion settings">
+          <div>
+            <h2 className="text-sm font-semibold text-neutral-100">Floating companion</h2>
+            <p className="mt-1 max-w-xl text-xs leading-5 text-neutral-400">
+              {detached
+                ? "Your companion is in its own window. Bring it back here whenever you like."
+                : enabled
+                ? "Your companion is visible across Buildflow. Open its message to move it or pop it into its own window."
+                : "Off by default. Turn it on when you want a companion in your Buildflow window."}
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-wrap items-center gap-3">
+            {detached && (
+              <button
+                type="button"
+                onClick={bringCompanionBack}
+                className="min-h-11 rounded-full border border-white/15 px-4 text-sm font-medium text-neutral-300 transition hover:border-white/30 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300"
+              >
+                Bring back
+              </button>
+            )}
+            <button
+              type="button"
+              role="switch"
+              aria-checked={enabled}
+              onClick={toggleCompanion}
+              className={`inline-flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${enabled ? "border-emerald-300/40 bg-emerald-300/10 text-emerald-100" : "border-white/15 bg-white/[.03] text-neutral-300 hover:border-white/30"}`}
+            >
+              <span className={`relative h-5 w-9 rounded-full transition ${enabled ? "bg-emerald-400" : "bg-neutral-700"}`} aria-hidden="true">
+                <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-all ${enabled ? "left-[18px]" : "left-0.5"}`} />
+              </span>
+              Companion {enabled ? "on" : "off"}
+            </button>
+          </div>
+        </section>
 
         <section aria-label="Choose a companion" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {NEXUS_PETS.map((pet) => {

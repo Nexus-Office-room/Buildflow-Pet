@@ -32,6 +32,22 @@
   filter: drop-shadow(0 8px 18px rgba(23, 224, 166, 0.14));
 }
 
+.patch-companion--moving .patch-companion__button {
+  cursor: grab;
+  touch-action: none;
+}
+
+.patch-companion--dragging .patch-companion__button {
+  cursor: grabbing;
+  transform: scale(1.04);
+  filter: drop-shadow(0 10px 24px rgba(23, 224, 166, 0.24));
+}
+
+.patch-companion--moving .patch-companion__status {
+  background: #f5b942;
+  box-shadow: 0 0 10px rgba(245, 185, 66, 0.65);
+}
+
 .patch-companion__button:focus-visible {
   outline: 2px solid var(--term-accent, #17e0a6);
   outline-offset: 2px;
@@ -106,6 +122,12 @@
   text-decoration-color: currentColor;
 }
 
+.patch-companion__move-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
 .patch-companion__reply:focus-visible,
 .patch-companion__choose:focus-visible,
 .patch-companion__close:focus-visible {
@@ -116,6 +138,32 @@
 .patch-companion--open .patch-companion__sprite {
   background-position-y: -312px;
   animation: patch-wave 800ms steps(4, end) infinite;
+}
+
+.pet-window-shell {
+  min-height: 100dvh;
+  background: transparent;
+  pointer-events: none;
+}
+
+body:has(.pet-window-shell) {
+  overflow: hidden;
+  background: transparent !important;
+}
+
+body:has(.pet-window-shell) .nx-backdrop,
+body:has(.pet-window-shell) .nx-ambient {
+  display: none;
+}
+
+body:has(.pet-window-shell) .patch-companion {
+  right: 5px;
+  bottom: 5px;
+}
+
+body:has(.pet-window-shell) .patch-companion__button {
+  transform: scale(0.84);
+  transform-origin: bottom right;
 }
 
 .patch-companion__status {

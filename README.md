@@ -4,11 +4,13 @@ Private source workspace for the Buildflow companion pet feature. This repo coll
 
 ## Contents
 
-- `apps/web/src/lib/pets.ts` — pet definitions, default choice, and browser storage
+- `apps/web/src/lib/pets.ts` — pet definitions, opt-in preference, selection, detached-window state, and saved position
 - `apps/web/src/components/brand/PatchCompanion.tsx` — persistent floating sidekick widget
-- `apps/web/src/app/companions/page.tsx` — companion selection screen
+- `apps/web/src/app/companions/page.tsx` — companion selection screen and on/off control
+- `apps/web/src/app/pet-window/page.tsx` — same-origin popup window for moving the companion outside the main Buildflow page
 - `apps/web/public/patch/patch-v2.png` — Patch sprite atlas
 - `apps/web/src/app/patch-companion.css` — companion-only stylesheet excerpt from the main app
+- `apps/web/src/app/companion-layout-integration.md` — root layout and popup integration notes
 - `apps/web/src/app/companion-layout-integration.md` — where the widget is mounted
 
 ## Production relationship
